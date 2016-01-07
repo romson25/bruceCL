@@ -1,0 +1,12 @@
+#ifndef BRUCECL_MK3_GLOBAL_H
+#define BRUCECL_MK3_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(BRUCECL_MK3_LIBRARY)
+#  define BRUCECL_MK3SHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define BRUCECL_MK3SHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // BRUCECL_MK3_GLOBAL_H
