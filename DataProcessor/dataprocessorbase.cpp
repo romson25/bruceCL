@@ -8,15 +8,15 @@ QByteArray DataProcessorBase::prepareInstruction(Instruction instruction)
     return (instruction == Instruction::takePhoto) ? takePhoto : endScanning;
 }
 
-void DataProcessorBase::removeBod(QByteArray &data)
+void DataProcessorBase::removeBod   (QByteArray &data)
 {
-    data.replace(0,1,"");
+    data.replace(0, bodLength, "");
 }
-void DataProcessorBase::removeEod(QByteArray &data)
+void DataProcessorBase::removeEod   (QByteArray &data)
 {
-    data.chop(1);
+    data.chop(eodLength);
 }
-bool DataProcessorBase::containsEod(QByteArray &data)
+bool DataProcessorBase::containEod  (QByteArray &data)
 {
-    return data.right(1) == eod;
+    return data.right(eodLength) == eod;
 }

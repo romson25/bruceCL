@@ -19,11 +19,12 @@ void UsbPortDataProcessor::read(QByteArray data)
         emit receivedInstruction(Instruction::endScanning);
         receivedData.clear();
     }
+    //TODO:poprawić, napewno da się to napisać lepiej
 }
-QByteArray UsbPortDataProcessor::prepareConfiguration(float rotateNumber)
+QByteArray UsbPortDataProcessor::prepareConfiguration(float motorStepsNumber)
 {
-    QByteArray bod{1, (char)DataType::configuration};
-    QByteArray content = QByteArray::number(rotateNumber);
+    QByteArray content = QByteArray::number(motorStepsNumber);
+    QByteArray configuration { configurationBod + content + eod };
 
-    return bod + content + eod;
+    return configuration;
 }

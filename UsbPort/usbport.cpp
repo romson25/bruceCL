@@ -18,7 +18,7 @@ void UsbPort::sendInstruction(Instruction instruction)
     send(dataProcessor.prepareInstruction(instruction));
 }
 
-void UsbPort::setRotateNumber(float n)
+void UsbPort::setStepsMotorNumber(float n)
 {
     send(dataProcessor.prepareConfiguration(n));
 }

@@ -1,7 +1,7 @@
 #ifndef TCPSERVERDATAPROCESSOR_H
 #define TCPSERVERDATAPROCESSOR_H
 
-#include "photogram.h"
+#include <QImage>
 #include "DataProcessor/dataprocessorbase.h"
 
 class TcpServerDataProcessor : public QObject, public DataProcessorBase
@@ -13,22 +13,17 @@ public:
     void read(QByteArray);
 
 signals:
-    void receivedPhotogram(Photogram&);
+    void receivedImage      (QImage&);
     void receivedInstruction(Instruction);
-    void message (MessageType, QString, QString = "TcpClientDataProcessor");
-
-public slots:
-    void angleChanged(float);
-    void removeOldestPhotogram();
+    void message            (MessageType, QString, QString = "TcpClientDataProcessor");
 
 private:
-    bool isImage(QByteArray &);
-    void createPhotogram();
+    bool constainImageBod        (QByteArray &);
+    void readImage          (QByteArray &);
+    void createImageFromData();
 
-    QVector<Photogram> photograms {};
-    QVector<QByteArray> rawImages {};
-
-    float angle {};
+    QImage image {};
+    QByteArray rawImage {};
 };
 
 #endif // TCPSERVERDATAPROCESSOR_H

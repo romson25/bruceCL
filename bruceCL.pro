@@ -14,7 +14,6 @@ CONFIG  += c++11
 DEFINES += BRUCECL_LIBRARY
 
 SOURCES += \
-    TcpServer/photogram.cpp \
     DataProcessor/dataprocessorbase.cpp \
     TcpServer/tcpserver.cpp \
     TcpServer/tcpserverdataprocessor.cpp \
@@ -31,7 +30,6 @@ HEADERS +=\
     DataProcessor/messagetype.h \
     DataProcessor/instruction.h \
     DataProcessor/dataprocessorbase.h \
-    TcpServer/photogram.h \
     TcpServer/tcpserver.h \
     TcpServer/tcpserverdataprocessor.h \
     TcpClient/tcpclient.h \

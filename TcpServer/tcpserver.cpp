@@ -4,25 +4,22 @@ TcpServer::TcpServer(QObject *parent) : QObject(parent)
 {
     connect(server, &QTcpServer::newConnection, this,   &TcpServer::newConnection);
 
-    connect(this, &TcpServer::angleChanged,             &dataProcessor, &TcpServerDataProcessor::angleChanged);
-    connect(this, &TcpServer::removeOldestPhotogram,    &dataProcessor, &TcpServerDataProcessor::removeOldestPhotogram);
-
     connect(&dataProcessor,  &TcpServerDataProcessor::message,              this,   &TcpServer::message);
-    connect(&dataProcessor,  &TcpServerDataProcessor::receivedPhotogram,    this,   &TcpServer::receivedPhotogram);
+    connect(&dataProcessor,  &TcpServerDataProcessor::receivedImage,        this,   &TcpServer::receivedImage);
     connect(&dataProcessor,  &TcpServerDataProcessor::receivedInstruction,  this,   &TcpServer::receivedInstruction);
 }
 
-void TcpServer::closeConnection()
+void TcpServer::closeConnection ()
 {
     socket->close();
     server->close();
 }
-void TcpServer::sendInstruction(Instruction instruction)
+void TcpServer::sendInstruction (Instruction instruction)
 {
     send(dataProcessor.prepareInstruction(instruction));
 }
 
-void TcpServer::openConnection()
+void TcpServer::openConnection  ()
 {
     if(!server->listen(QHostAddress::Any, 6850))
         emit message(MessageType::warning, "Użyty port jest już zajęty. Uruchom tylko jedną instacje programu");
@@ -44,22 +41,25 @@ void TcpServer::openConnection()
     emit message(MessageType::criticalError, "Brak połączenia z internetem");
 }
 
-void TcpServer::connected()
+void TcpServer::connected       ()
 {
     emit connectionStatusChanged(ConnectionStatus::connected);
     emit message(MessageType::log, "Nawiązano połączenie");
 }
-void TcpServer::disconnected()
+void TcpServer::disconnected    ()
 {
     emit connectionStatusChanged(ConnectionStatus::disconnected);
     emit message(MessageType::log, "Połączenie zakończone");
 }
-void TcpServer::readyRead()
+void TcpServer::readyRead       ()
 {
-    dataProcessor.read(socket->readAll());
+    while( socket->canReadLine() )
+    {
+        dataProcessor.read( socket->readLine() );
+    }
 }
 
-void TcpServer::newConnection()
+void TcpServer::newConnection   ()
 {
     socket = server->nextPendingConnection();
 

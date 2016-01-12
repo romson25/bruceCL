@@ -16,7 +16,7 @@ public:
 
 signals:
     void receivedInstruction (Instruction);
-    void message (MessageType, QString, QString = "TcpClientDataProcessor");
+    void message (MessageType, QString, QString = "TcpClientDataProcessor");    
 };
 
 #endif // TCPCLIENTDATAPROCESSOR_H

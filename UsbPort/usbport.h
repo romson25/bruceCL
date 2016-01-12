@@ -9,9 +9,10 @@
 #include "usbportdataprocessor.h"
 #include "brucecl_global.h"
 
-class BRUCECL_MK3SHARED_EXPORT UsbPort : public QObject
+class BRUCECL_MK3SHARED_EXPORT UsbPort : public QObject, public IConnection
 {
     Q_OBJECT
+    Q_INTERFACES(IConnection)
 public:
     explicit UsbPort(QObject *parent = 0);
 
@@ -24,7 +25,7 @@ public slots:
     void closeConnection     ();
     void sendInstruction     (Instruction);
 
-        void setRotateNumber (float);
+        void setStepsMotorNumber (float);
         void openConnection  ();
 
 private slots:
@@ -32,7 +33,7 @@ private slots:
     void disconnected        ();
     void readyRead           ();
 
-        void emitInternalError  (QSerialPort::SerialPortError);
+        void emitInternalError(QSerialPort::SerialPortError);
 
 private:
     void send(const QByteArray &);

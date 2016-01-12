@@ -10,7 +10,7 @@ public:
     explicit UsbPortDataProcessor(QObject *parent = 0);
 
     void read(QByteArray data);
-    QByteArray prepareConfiguration(float rotateNumber);
+    QByteArray prepareConfiguration(float motorStepsNumber);
 
 signals:
     void receivedInstruction (Instruction);

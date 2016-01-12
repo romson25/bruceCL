@@ -8,9 +8,10 @@
 #include "tcpclientdataprocessor.h"
 #include "brucecl_global.h"
 
-class BRUCECL_MK3SHARED_EXPORT TcpClient : public QObject
+class BRUCECL_MK3SHARED_EXPORT TcpClient : public QObject, public IConnection
 {
     Q_OBJECT
+    Q_INTERFACES(IConnection)
 public:
     explicit TcpClient(QObject *parent = 0);
 

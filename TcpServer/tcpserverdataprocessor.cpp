@@ -1,65 +1,55 @@
 #include "tcpserverdataprocessor.h"
 
-TcpServerDataProcessor::TcpServerDataProcessor(QObject *parent) : QObject(parent)
+TcpServerDataProcessor::TcpServerDataProcessor  (QObject *parent) : QObject(parent)
 {}
 
-void TcpServerDataProcessor::read(QByteArray data)
+void TcpServerDataProcessor::read               (QByteArray data)
 {
-    if(containsEod(data))           //--jeżeli dane zawierają znak końca
+    if( data == takePhoto )
+        emit receivedInstruction(Instruction::takePhoto);
+    else if( data == endScanning )
+        emit receivedInstruction(Instruction::endScanning);
+    else
+        readImage(data);
+}
+
+bool TcpServerDataProcessor::constainImageBod   (QByteArray &data)
+{
+    return data.left(bodLength) == imageBod;
+}
+void TcpServerDataProcessor::readImage          (QByteArray &data)
+{
+    if( containEod(data) )
     {
-        switch (data.at(0))         //--spróbuj rozpoznać znak początku
+        if( constainImageBod(data) )    //--otrzymano zdjęcie w jednym pakiecie
         {
-            case (char)Instruction::takePhoto:
-                emit receivedInstruction(Instruction::takePhoto);
-                break;
-            case (char)Instruction::endScanning:
-                emit receivedInstruction(Instruction::endScanning);
-                break;
-            case (char)DataType::image:         //--otrzymano zdjęcie w jednym pakiecie
-                rawImages.push_back(data);      //--dodaj do kontenera nową paczkę danych
-                removeBod(rawImages.last());    //--usuń znak początku
-                createPhotogram();
-                break;
-            default:                        //--KONIEC ZDJĘCIA
-                rawImages.last().push_back(data);   //--dodaj do kontenera
-                createPhotogram();
-                break;
+            rawImage = std::move(data);
+            createImageFromData();
+
+            emit receivedImage(image);
+        }
+        else                            //--KONIEC ZDJĘCIA
+        {
+            rawImage.push_back(std::move(data));
+            createImageFromData();
+
+            emit receivedImage(image);
         }
     }
     else
     {
-        if(isImage(data))                   //--POCZĄTEK ZDJĘCIA
-        {
-            rawImages.push_back(data);              //--dodaj do kontenera nową paczkę danych
-            removeBod(rawImages.last());            //--usuń znak początku
-        }
-        else                                //--ŚRODEK ZDJĘCIA
-        {
-            rawImages.last().push_back(data);       //--dodaj do kontenera
-        }
+        if( constainImageBod(data) )    //--POCZĄTEK ZDJĘCIA
+            rawImage = std::move(data);
+        else                            //--ŚRODEK ZDJĘCIA
+            rawImage.push_back(std::move(data));
     }
 }
-void TcpServerDataProcessor::angleChanged(float n)
+void TcpServerDataProcessor::createImageFromData()
 {
-    angle = n;
-}
-void TcpServerDataProcessor::removeOldestPhotogram()
-{
-    photograms.pop_front();
-}
+    removeBod(rawImage);
+    removeEod(rawImage);
+    image = QImage::fromData(rawImage, "JPG");
+    rawImage.clear();
 
-bool TcpServerDataProcessor::isImage(QByteArray &data)
-{
-    return data.at(0) ==(char)DataType::image;
-}
-void TcpServerDataProcessor::createPhotogram()
-{
-    removeEod(rawImages.last());                                //--usuń znak końca
-    photograms.push_back(Photogram(rawImages.last(),angle));    //--stwórz photogram i dodaj do kontenera
-    rawImages.clear();                                          //--wyczyść kontener w którym przechowywałeś surowe dane zdjęcia
-
-    emit receivedInstruction(Instruction::takePhoto);
-    emit receivedPhotogram(photograms.last());
-
-    //wrzuć tutaj obsługę wyjątku gdyby coś miało pójść nie tak
+    //TODO: wrzuć tutaj obsługę wyjątku gdyby coś miało pójść nie tak
 }

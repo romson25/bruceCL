@@ -23,9 +23,7 @@ signals:
     void message                    (MessageType, QString, QString = "TcpServer");
 
         void serverAddressChanged   (QString, QString);
-        void receivedPhotogram      (Photogram &);
-        void angleChanged           (float);
-        void removeOldestPhotogram  ();
+        void receivedImage          (QImage&);
 
 public slots:
     void closeConnection    ();

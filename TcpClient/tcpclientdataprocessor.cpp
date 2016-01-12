@@ -16,8 +16,7 @@ const QByteArray& TcpClientDataProcessor::prepareImage(QString path)
     static QByteArray imageData{};
     imageData.clear();
 
-    QByteArray bod(1, (char)DataType::image);
-    imageData = bod + image.readAll() + eod;
+    imageData = imageBod + image.readAll() + eod;
 
     return imageData;
 }
