@@ -54,7 +54,7 @@ void UsbPort::disconnected()
 }
 void UsbPort::readyRead()
 {
-    dataProcessor.read(arduino->readAll());
+    dataProcessor.read( arduino->readAll() );
 }
 
 void UsbPort::send(const QByteArray &data)
