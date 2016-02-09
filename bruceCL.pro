@@ -42,9 +42,3 @@ unix {
     target.path = /usr/lib
     INSTALLS += target
 }
-
-INCLUDEPATH += /usr/local/include
-LIBS += -L/usr/local/lib
-LIBS += -lopencv_core
-LIBS += -lopencv_imgproc
-LIBS += -lopencv_imgcodecs

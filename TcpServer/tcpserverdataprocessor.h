@@ -18,7 +18,7 @@ signals:
     void message            (MessageType, QString, QString = "TcpClientDataProcessor");
 
 private:
-    bool constainImageBod        (QByteArray &);
+    bool constainImageBod   (QByteArray &);
     void readImage          (QByteArray &);
     void createImageFromData();
 
